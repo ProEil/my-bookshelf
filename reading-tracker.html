@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的小書架 🐛</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink-50: #FFF0F5;
+    --pink-100: #F4C0D1;
+    --pink-400: #D4537E;
+    --pink-600: #993556;
+    --pink-800: #72243E;
+    --green-50: #EAF3DE;
+    --green-100: #C0DD97;
+    --green-600: #3B6D11;
+    --green-800: #27500A;
+    --purple-50: #EEEDFE;
+    --purple-100: #CECBF6;
+    --purple-600: #534AB7;
+    --purple-800: #3C3489;
+    --amber-50: #FAEEDA;
+    --amber-100: #FAC775;
+    --amber-400: #EF9F27;
+    --amber-600: #854F0B;
+    --amber-800: #633806;
+    --bg: #FDF8FF;
+    --card: #FFFFFF;
+    --text: #2C1A2E;
+    --text-soft: #7A6080;
+    --text-hint: #B09ABE;
+    --border: #EDE0F5;
+    --radius: 20px;
+    --radius-sm: 12px;
+    --radius-pill: 99px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* Dotted background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: radial-gradient(circle, #E8D5F5 1px, transparent 1px);
+    background-size: 28px 28px;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 1rem 1.25rem;
+    background: var(--pink-50);
+    border-radius: 28px;
+    border: 2.5px solid var(--pink-100);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '✦';
+    position: absolute;
+    top: 10px; right: 14px;
+    font-size: 13px;
+    color: var(--pink-100);
+  }
+  .hero::before {
+    content: '✦';
+    position: absolute;
+    bottom: 12px; left: 14px;
+    font-size: 10px;
+    color: var(--pink-100);
+  }
+  .hero-worm { font-size: 40px; margin-bottom: 4px; display: block; animation: wiggle 3s ease-in-out infinite; }
+  @keyframes wiggle {
+    0%,100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+  }
+  .hero h1 { font-size: 26px; font-weight: 900; color: var(--pink-800); letter-spacing: 0.5px; }
+  .hero p { font-size: 13px; color: var(--pink-600); margin-top: 4px; font-weight: 600; }
+
+  /* ── Stats ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .stat {
+    border-radius: var(--radius);
+    padding: .875rem .5rem;
+    text-align: center;
+    border: 2px solid;
+    transition: transform 0.15s;
+  }
+  .stat:hover { transform: translateY(-2px); }
+  .stat-pink  { background: var(--pink-50);   border-color: var(--pink-100); }
+  .stat-green { background: var(--green-50);  border-color: var(--green-100); }
+  .stat-purple{ background: var(--purple-50); border-color: var(--purple-100); }
+  .stat-ico { font-size: 20px; display: block; margin-bottom: 2px; }
+  .stat-n {
+    font-size: 24px; font-weight: 900; display: block; line-height: 1.1;
+  }
+  .stat-pink   .stat-n { color: var(--pink-800); }
+  .stat-green  .stat-n { color: var(--green-800); }
+  .stat-purple .stat-n { color: var(--purple-800); }
+  .stat-l { font-size: 11px; font-weight: 700; display: block; margin-top: 2px; }
+  .stat-pink   .stat-l { color: var(--pink-600); }
+  .stat-green  .stat-l { color: var(--green-600); }
+  .stat-purple .stat-l { color: var(--purple-600); }
+
+  /* ── Add Card ── */
+  .add-card {
+    background: #FFFBF2;
+    border: 2px solid var(--amber-100);
+    border-radius: 28px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .add-label { font-size: 13px; font-weight: 800; color: var(--amber-800); margin-bottom: 8px; }
+  .inp-wrap { display: flex; gap: 8px; margin-bottom: 10px; }
+  .inp-wrap input {
+    flex: 1;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--amber-100);
+    background: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 9px 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .inp-wrap input:focus { border-color: var(--amber-400); }
+  .inp-wrap input::placeholder { color: var(--text-hint); font-weight: 600; }
+
+  .pills { display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 12px; }
+  .pill {
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    border: 2px solid;
+    background: transparent;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.13s;
+  }
+  .pill-r { border-color: var(--pink-100); color: var(--pink-800); }
+  .pill-r.on { background: var(--pink-50); border-color: var(--pink-400); }
+  .pill-f { border-color: var(--green-100); color: var(--green-800); }
+  .pill-f.on { background: var(--green-50); border-color: var(--green-600); }
+  .pill-w { border-color: var(--purple-100); color: var(--purple-800); }
+  .pill-w.on { background: var(--purple-50); border-color: var(--purple-600); }
+
+  .add-btn {
+    width: 100%;
+    padding: 11px;
+    background: var(--amber-400);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    letter-spacing: 0.3px;
+    transition: background 0.13s, transform 0.1s;
+  }
+  .add-btn:hover { background: #d4891e; }
+  .add-btn:active { transform: scale(0.98); }
+
+  /* ── Filter Tabs ── */
+  .ftabs { display: flex; gap: 7px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .ftab {
+    padding: 6px 15px;
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--border);
+    background: transparent;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    color: var(--text-soft);
+    transition: all 0.13s;
+  }
+  .ftab:hover { border-color: var(--pink-100); }
+  .ftab.on { background: var(--pink-400); color: #fff; border-color: var(--pink-400); }
+
+  /* ── Book List ── */
+  .books { display: flex; flex-direction: column; gap: 9px; }
+  .bcard {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    padding: .875rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: border-color 0.15s, transform 0.15s;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .bcard:hover { border-color: var(--pink-100); transform: translateX(3px); }
+  .bico {
+    width: 44px; height: 44px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+    border: 2px solid;
+  }
+  .binfo { flex: 1; min-width: 0; }
+  .btitle {
+    font-size: 15px; font-weight: 700; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .bmeta { display: flex; align-items: center; gap: 7px; margin-top: 4px; flex-wrap: wrap; }
+  .bbadge {
+    font-size: 11px; padding: 2px 10px;
+    border-radius: var(--radius-pill);
+    font-weight: 700; border: 1.5px solid;
+  }
+  .bb-r { background: var(--pink-50);   color: var(--pink-800);   border-color: var(--pink-100); }
+  .bb-f { background: var(--green-50);  color: var(--green-800);  border-color: var(--green-100); }
+  .bb-w { background: var(--purple-50); color: var(--purple-800); border-color: var(--purple-100); }
+  .bdate { font-size: 12px; color: var(--text-hint); font-weight: 600; }
+
+  .del {
+    background: none; border: none; cursor: pointer;
+    color: var(--text-hint); font-size: 16px;
+    padding: 5px 7px; border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.13s; flex-shrink: 0;
+  }
+  .del:hover { color: #E24B4A; background: #FCEBEB; }
+
+  /* ── Empty ── */
+  .empty {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    color: var(--text-soft);
+  }
+  .empty-ico { font-size: 48px; display: block; margin-bottom: 8px; }
+  .empty-txt { font-size: 14px; font-weight: 700; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--green-800);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px; font-weight: 700;
+    padding: 10px 20px;
+    border-radius: var(--radius-pill);
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: none;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ── Footer ── */
+  .footer {
+    text-align: center;
+    margin-top: 2.5rem;
+    font-size: 12px;
+    color: var(--text-hint);
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="hero">
+    <span class="hero-worm">🐛</span>
+    <h1>我的小書架</h1>
+    <p>每一頁都是冒險的開始 ✨</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat stat-pink">
+      <span class="stat-ico">📚</span>
+      <span class="stat-n" id="s-all">0</span>
+      <span class="stat-l">全部書籍</span>
+    </div>
+    <div class="stat stat-green">
+      <span class="stat-ico">🌱</span>
+      <span class="stat-n" id="s-reading">0</span>
+      <span class="stat-l">閱讀中</span>
+    </div>
+    <div class="stat stat-purple">
+      <span class="stat-ico">🌟</span>
+      <span class="stat-n" id="s-finished">0</span>
+      <span class="stat-l">讀完了</span>
+    </div>
+  </div>
+
+  <div class="add-card">
+    <div class="add-label">📖 新增一本書</div>
+    <div class="inp-wrap">
+      <input type="text" id="inp" placeholder="輸入書名..." autocomplete="off" />
+    </div>
+    <div class="pills">
+      <button class="pill pill-r on" data-s="reading" onclick="pickS(this)">📖 閱讀中</button>
+      <button class="pill pill-f" data-s="finished" onclick="pickS(this)">✅ 讀完了</button>
+      <button class="pill pill-w" data-s="want" onclick="pickS(this)">💜 想讀</button>
+    </div>
+    <button class="add-btn" onclick="add()">＋ 加入書架</button>
+  </div>
+
+  <div class="ftabs">
+    <button class="ftab on" data-f="all"     onclick="setF(this)">🗂 全部</button>
+    <button class="ftab"    data-f="reading" onclick="setF(this)">📖 閱讀中</button>
+    <button class="ftab"    data-f="finished"onclick="setF(this)">✅ 讀完了</button>
+    <button class="ftab"    data-f="want"    onclick="setF(this)">💜 想讀</button>
+  </div>
+
+  <div class="books" id="list"></div>
+
+  <div class="footer">資料儲存在你的瀏覽器，只屬於你 🔒</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const ICONS = [
+  {e:'📕', bg:'#FBEAF0', bc:'#F4C0D1'},
+  {e:'📗', bg:'#EAF3DE', bc:'#C0DD97'},
+  {e:'📘', bg:'#E6F1FB', bc:'#B5D4F4'},
+  {e:'📙', bg:'#FAEEDA', bc:'#FAC775'},
+  {e:'📓', bg:'#EEEDFE', bc:'#CECBF6'},
+  {e:'📒', bg:'#E1F5EE', bc:'#9FE1CB'},
+];
+const SL = { reading:'閱讀中', finished:'讀完了', want:'想讀' };
+const BC = { reading:'bb-r', finished:'bb-f', want:'bb-w' };
+const PC = { reading:'pill-r', finished:'pill-f', want:'pill-w' };
+const KEY = 'mybookshelf-v1';
+
+let books = [], curS = 'reading', curF = 'all';
+
+function load() {
+  try { books = JSON.parse(localStorage.getItem(KEY)) || []; }
+  catch(e) { books = []; }
+}
+function save() {
+  localStorage.setItem(KEY, JSON.stringify(books));
+}
+
+function today() {
+  const d = new Date();
+  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function pickS(btn) {
+  document.querySelectorAll('.pill').forEach(p => {
+    p.className = 'pill ' + PC[p.dataset.s];
+  });
+  btn.classList.add('on');
+  curS = btn.dataset.s;
+}
+
+function setF(tab) {
+  document.querySelectorAll('.ftab').forEach(t => t.classList.remove('on'));
+  tab.classList.add('on');
+  curF = tab.dataset.f;
+  render();
+}
+
+function add() {
+  const v = document.getElementById('inp').value.trim();
+  if (!v) { document.getElementById('inp').focus(); return; }
+  const colorIdx = books.length % ICONS.length;
+  books.unshift({ id: Date.now(), title: v, status: curS, date: today(), ci: colorIdx });
+  document.getElementById('inp').value = '';
+  save();
+  render();
+  toast('📚 已加入書架！');
+}
+
+function del(id) {
+  books = books.filter(b => b.id !== id);
+  save();
+  render();
+  toast('🗑 已刪除');
+}
+
+function changeStatus(id, newStatus) {
+  const b = books.find(b => b.id === id);
+  if (b) { b.status = newStatus; save(); render(); toast('✅ 狀態已更新！'); }
+}
+
+function render() {
+  document.getElementById('s-all').textContent = books.length;
+  document.getElementById('s-reading').textContent = books.filter(b => b.status === 'reading').length;
+  document.getElementById('s-finished').textContent = books.filter(b => b.status === 'finished').length;
+
+  const shown = curF === 'all' ? books : books.filter(b => b.status === curF);
+  const el = document.getElementById('list');
+
+  if (!shown.length) {
+    const msgs = {
+      all:      ['🌸', '書架還空空的，加第一本書吧！'],
+      reading:  ['📭', '目前沒有在讀的書'],
+      finished: ['🎉', '還沒有讀完的書'],
+      want:     ['💭', '還沒有想讀的書'],
+    };
+    const [ico, txt] = msgs[curF];
+    el.innerHTML = `<div class="empty"><span class="empty-ico">${ico}</span><div class="empty-txt">${txt}</div></div>`;
+    return;
+  }
+
+  el.innerHTML = shown.map(b => {
+    const ic = ICONS[b.ci];
+    const otherStatuses = Object.entries(SL).filter(([k]) => k !== b.status);
+    const statusBtns = otherStatuses.map(([k, label]) =>
+      `<button onclick="changeStatus(${b.id},'${k}')" style="background:none;border:none;cursor:pointer;font-size:11px;font-weight:700;color:var(--text-hint);padding:0;font-family:'Nunito',sans-serif;" title="改為${label}">→${label}</button>`
+    ).join('');
+    return `<div class="bcard">
+      <div class="bico" style="background:${ic.bg};border-color:${ic.bc};">${ic.e}</div>
+      <div class="binfo">
+        <div class="btitle">${b.title}</div>
+        <div class="bmeta">
+          <span class="bbadge ${BC[b.status]}">${SL[b.status]}</span>
+          <span class="bdate">${b.date}</span>
+          ${statusBtns}
+        </div>
+      </div>
+      <button class="del" onclick="del(${b.id})" title="刪除">✕</button>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('inp').addEventListener('keydown', e => {
+  if (e.key === 'Enter') add();
+});
+
+load();
+render();
+</script>
+</body>
+</html>
